@@ -6,14 +6,14 @@ side = 20
 sideF :: Float
 sideF = fromIntegral side
 
-vBlocks :: Int
-vBlocks = 20
+wBlocks :: Int
+wBlocks = 20
 
 hBlocks :: Int
 hBlocks = 20
 
 windowHeight :: Int
-windowHeight = vBlocks*side
+windowHeight = hBlocks*side
 
 windowWidth :: Int
-windowWidth = hBlocks*side
+windowWidth = wBlocks*side
