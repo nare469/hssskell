@@ -1,3 +1,4 @@
+import Prelude hiding (Left, Right)
 import Const
 import Graphics.Gloss
 
@@ -9,9 +10,17 @@ translatePixel dx dy (Pixel x y) = Pixel (x+dx) (y+dy)
 
 type Snake = [Pixel]
 
-data Game = Game { snakePos :: Snake }
+data Game = Game 
+    { snake :: Snake
+    , direction :: Direction }
+
 initialState :: Game 
-initialState = Game {snakePos = [Pixel (div wBlocks 2) (div hBlocks 2)] }
+initialState = Game
+    { snake = [Pixel (div wBlocks 2) (div hBlocks 2)]
+    , direction = Right }
+
+data Direction = Right | Left | Up | Down
+    deriving (Eq)
 
 --Shifting origin to bottom left corner
 translateHeight :: Float
@@ -34,7 +43,15 @@ window :: Display
 window = InWindow "Snake" (windowWidth, windowHeight) (0, 0)
 
 renderState :: Game -> Picture
-renderState = pictures . drawSnake . snakePos
+renderState = pictures . drawSnake . snake
+
+--Other functions
+moveSnake :: Snake -> Direction -> Snake
+moveSnake s d
+    | d == Up    = (translatePixel 0 1 $ head s):s
+    | d == Down  = (translatePixel 0 (-1) $ head s):s
+    | d == Right = (translatePixel 1 0 $ head s):s
+    | d == Left  = (translatePixel (-1) 0 $ head s):s
 
 main :: IO ()
 main = display window white $ renderState initialState
