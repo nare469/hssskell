@@ -1,6 +1,7 @@
 import Prelude hiding (Left, Right)
 import Const
 import Graphics.Gloss
+import Graphics.Gloss.Data.ViewPort
 
 --data Definitions
 data Pixel = Pixel Int Int
@@ -48,10 +49,13 @@ renderState = pictures . drawSnake . snake
 --Other functions
 moveSnake :: Snake -> Direction -> Snake
 moveSnake s d
-    | d == Up    = (translatePixel 0 1 $ head s):s
-    | d == Down  = (translatePixel 0 (-1) $ head s):s
-    | d == Right = (translatePixel 1 0 $ head s):s
-    | d == Left  = (translatePixel (-1) 0 $ head s):s
+    | d == Up    = (translatePixel 0 1 $ head s):(init s)
+    | d == Down  = (translatePixel 0 (-1) $ head s):(init s)
+    | d == Right = (translatePixel 1 0 $ head s):(init s)
+    | d == Left  = (translatePixel (-1) 0 $ head s):(init s)
+
+update :: ViewPort -> Float -> Game -> Game
+update _ _ g = g { snake = (moveSnake (snake g) (direction g)) }
 
 main :: IO ()
-main = display window white $ renderState initialState
+main = simulate window white 1 initialState renderState update 
