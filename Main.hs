@@ -9,7 +9,10 @@ translatePixel dx dy (Pixel x y) = Pixel (x+dx) (y+dy)
 
 initialState :: Game 
 initialState = Game
-    { snake = [Pixel (div wBlocks 2) (div hBlocks 2)]
+    { snake = [
+        Pixel (div wBlocks 2) (div hBlocks 2),
+        Pixel ((div wBlocks 2) - 1) (div hBlocks 2),
+        Pixel ((div wBlocks 2) - 2) (div hBlocks 2) ]
     , direction = Data.Right }
 
 --Shifting origin to bottom left corner
