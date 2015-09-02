@@ -2,7 +2,7 @@ import Const
 import Graphics.Gloss
 
 window :: Display
-window = InWindow "Snake" (15*squareSide, 15*squareSide) (10, 10)
+window = InWindow "Snake" (windowWidth*side, windowHeight*side) (0, 0)
 
 main :: IO ()
-main = display window white (circle 10)
+main = display window white (rectangleSolid sideF sideF)
