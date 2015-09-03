@@ -57,4 +57,4 @@ keyPressHandler (EventKey (Char 'd') _ _ _) game = game { direction = Data.Right
 keyPressHandler _ game = game
 
 main :: IO ()
-main = play window white 1 initialState renderState keyPressHandler update
+main = play window white 2 initialState renderState keyPressHandler update
