@@ -39,6 +39,14 @@ renderState :: Game -> Picture
 renderState = pictures . drawSnake . snake
 
 --Other functions
+checkOverflow :: Pixel -> Pixel
+checkOverflow (Pixel x y)
+    | x >= wBlocks = Pixel (x - wBlocks) y
+    | x < 0        = Pixel (x + wBlocks) y
+    | y >= hBlocks = Pixel x (y - hBlocks)
+    | y < 0        = Pixel x (y + hBlocks) 
+    | otherwise    = Pixel x y
+
 moveSnake :: Snake -> Direction -> Snake
 moveSnake s d
     | d == Data.Up    = (translatePixel 0 1 $ head s):(init s)
@@ -46,8 +54,11 @@ moveSnake s d
     | d == Data.Right = (translatePixel 1 0 $ head s):(init s)
     | d == Data.Left  = (translatePixel (-1) 0 $ head s):(init s)
 
+moveSnakeBounded :: Snake -> Direction -> Snake
+moveSnakeBounded s d = map checkOverflow (moveSnake s d)
+
 update :: Float -> Game -> Game
-update _ g = g { snake = (moveSnake (snake g) (direction g)) }
+update _ g = g { snake = (moveSnakeBounded (snake g) (direction g)) }
 
 keyPressHandler :: Event -> Game -> Game
 keyPressHandler (EventKey (Char 's') _ _ _) game = game { direction = Data.Down }
