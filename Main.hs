@@ -2,7 +2,7 @@ import Const
 import Data
 import Graphics.Gloss
 import Graphics.Gloss.Data.ViewPort
-import Graphics.Gloss.Interface.Pure.Game
+import Graphics.Gloss.Interface.IO.Game
 
 translatePixel :: Int -> Int -> Pixel -> Pixel
 translatePixel dx dy (Pixel x y) = Pixel (x+dx) (y+dy)
@@ -35,8 +35,10 @@ drawSnake = map drawPixel
 window :: Display
 window = InWindow "Snake" (windowWidth, windowHeight) (0, 0)
 
-renderState :: Game -> Picture
-renderState = pictures . drawSnake . snake
+renderState :: Game -> IO Picture
+renderState g = do
+    let s = snake g
+    return $ pictures (drawSnake s)
 
 --Other functions
 checkOverflow :: Pixel -> Pixel
@@ -57,15 +59,15 @@ moveSnake s d
 moveSnakeBounded :: Snake -> Direction -> Snake
 moveSnakeBounded s d = map checkOverflow (moveSnake s d)
 
-update :: Float -> Game -> Game
-update _ g = g { snake = (moveSnakeBounded (snake g) (direction g)) }
+update :: Float -> Game -> IO Game
+update _ g = return $ g { snake = (moveSnakeBounded (snake g) (direction g)) }
 
-keyPressHandler :: Event -> Game -> Game
-keyPressHandler (EventKey (Char 's') _ _ _) game = game { direction = Data.Down }
-keyPressHandler (EventKey (Char 'w') _ _ _) game = game { direction = Data.Up }
-keyPressHandler (EventKey (Char 'a') _ _ _) game = game { direction = Data.Left }
-keyPressHandler (EventKey (Char 'd') _ _ _) game = game { direction = Data.Right }
-keyPressHandler _ game = game
+keyPressHandler :: Event -> Game -> IO Game
+keyPressHandler (EventKey (Char 's') _ _ _) game = return $ game { direction = Data.Down }
+keyPressHandler (EventKey (Char 'w') _ _ _) game = return $ game { direction = Data.Up }
+keyPressHandler (EventKey (Char 'a') _ _ _) game = return $ game { direction = Data.Left }
+keyPressHandler (EventKey (Char 'd') _ _ _) game = return $ game { direction = Data.Right }
+keyPressHandler _ game = return game
 
 main :: IO ()
-main = play window white 2 initialState renderState keyPressHandler update
+main = playIO window white 2 initialState renderState keyPressHandler update
